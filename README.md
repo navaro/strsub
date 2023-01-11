@@ -61,7 +61,7 @@ In this example, we use the output from the previous example and additionally su
 
 # Escape Character
 
-There is also an escape character:
+There is also configurable escape character ("\" for the example):
 ```
 ./build/strsub "\[name] will be replaced by [name]."
 ```
