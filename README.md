@@ -1,12 +1,16 @@
 # strsub
 This is a string substitution library written in C.
 
-Substrings between an open and a closing delimiter token are replaced with a new string, for example:
+Substrings between open and closing delimiter tokens are replaced with a new string, for example:
 ```
-The name of the module is [name].
+"[name] was in [location].
 ```
 
-In this case "[" and "]" is the opening and the closing delimiter tokens. A installed handler can replace [name] with a replacement string. One or more handlers can be installed for a pair of delimiter tokens. If no handler is found to replace the text, the string is left unchanged.
+In this case "[" and "]" is the opening and the closing delimiter tokens. If the appropriate handlers were installed to substitute the text within the delimiters ([name] and [location]) in the string shown above, the final output string could appear as follows:
+```
+Helly R. was in Dover.
+```
+One or more handlers can be installed for a pair of delimiter tokens. If no handler is found to replace the text, the string is left unchanged.
 
 # Example
 
