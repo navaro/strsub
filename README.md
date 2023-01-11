@@ -1,0 +1,2 @@
+# strsub
+String substitution library.
