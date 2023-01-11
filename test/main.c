@@ -63,6 +63,9 @@ main(int argc, char* argv[])
 {
     char c;
     int opt_index = 0;
+    uint32_t len ;
+    uint32_t dstlen ;
+    char * newwtext ;
 
     /*
      * Parse the command line parameters.
@@ -95,10 +98,6 @@ main(int argc, char* argv[])
 
     }
 
-    uint32_t offset ;
-    uint32_t len ;
-    uint32_t dstlen ;
-    char * newwtext ;
 
     /*
      * Example 1:  Parse a string from a source to a destination replacing text
@@ -111,28 +110,60 @@ main(int argc, char* argv[])
     strsub_install_handler (0, StrsubToken1, &_strsub_date, strsub_date_cb) ;
     strsub_install_handler (0, StrsubToken2, &_strsub_date2, strsub_date_cb) ;
 
-    len = strlen (opt_text) + 1;
+
+    printf ("### EXAMPLE 1 ###\r\n\r\n") ;
+    /*
+     * Determine the length of the source and destination strings.
+     */
+    len = strlen (opt_text) ;
     dstlen = strsub_parse_get_dst_length (0, opt_text, len) + 1 ;
+    /*
+     * Allocate memory for the destination string.
+     */
     newwtext = malloc(dstlen) ;
     if (newwtext) {
-        offset = strsub_parse_string_to (0, opt_text, len, newwtext, dstlen) ;
-        newwtext[offset] = '\0' ;
-        printf (newwtext) ;
-        printf ("\r\n") ;
+    	/*
+    	 * Parse the source string to the destination string replacing all
+    	 * delimited text.
+    	 */
+        strsub_parse_string_to (0, opt_text, len, newwtext, dstlen) ;
+        printf ("    %s", newwtext) ;
+        printf ("\r\n\r\n") ;
 
     } else {
-    	printf ("%s", "out of memory!\r\n")  ;
+    	printf ("out of memory!\r\n")  ;
     	return 0 ;
 
     }
 
+    /*
+     * Example 2:  Use the output of example 1. This time we simply write
+     *             the string directly to the console. The string is first
+     *             parsed and all ASCII codes delimited with '#' delimiters
+     *             are replaced by the ASCII char before it is written to the
+     *             console with the consolewriter_cb() function.
+     */
+    printf ("### EXAMPLE 2 ###\r\n\r\n    ") ;
+    /*
+     * Install a handler for the new instance of strsub to
+     * _strsub_consolewriter_inst. This handler writes  the string to the
+     * console but replace all integers delimited with '#' with their
+     * ASCII character.
+     */
     strsub_install_handler (&_strsub_consolewriter_inst, StrsubToken1,
     			&_strsub_consolewriter, strsub_consolewriter_cb) ;
-	offset = strsub_parse (&_strsub_consolewriter_inst,
-			consolewriter_cb, newwtext, strlen(newwtext), 0) ;
+    /*
+     * Parse the string.
+     */
+	strsub_parse (&_strsub_consolewriter_inst,
+				consolewriter_cb, newwtext, strlen(newwtext), 0) ;
+	/*
+	 * We dont need to print the result because it is
+     * already done by consolewriter_cb().
+	 */
 
+    printf ("\r\n\r\n") ;
 
-	printf ("\r\n%d characters written\r\n", offset) ;
 
 
 	free (newwtext) ;

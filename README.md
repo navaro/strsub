@@ -13,6 +13,19 @@ In this case "[" and "]" is the opening and the closing delimiter tokens. An ins
 To run the example open a codespace and compile the project. There is a Makefile so simply type ``` make ``` when the codespace is started.
 
 Run an example using by trying something like this:
+strsub  "[name] was in [location] on #219# [date] #219#"
 
+
+```
+./build/strsub "[name] was in [location] on [date] #254# #12##12##12##15#"
+Mark S was in Amsterdam on 2023-01-11 11:15:37 #254# #12##12##12##15#
+Mark S was in Amsterdam on 2023-01-11 11:15:37 � 
+
+
+
+48 characters written
+```
+
+strsub  "[name] was in [location] on #219# [date] #219#" --config=./test/test.cfg
 
 ## Example 1
