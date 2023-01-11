@@ -3,7 +3,7 @@ This is a string substitution library written in C.
 
 Substrings between open and closing delimiter tokens are replaced with a new string, for example:
 ```
-"[name] was in [location].
+[name] was in [location].
 ```
 
 In this case "[" and "]" is the opening and the closing delimiter tokens. If the appropriate handlers were installed to substitute the text within the delimiters ([name] and [location]) in the string shown above, the final output string could appear as follows:
