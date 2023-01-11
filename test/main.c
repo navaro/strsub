@@ -252,6 +252,7 @@ strsub_consolewriter_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,
 	int ch ;
 
 	if (*str == '#') {
+		/* here "##" also escapes and writes one "#" */
 		return cb(str, 1, offset,  arg) ;
 	}
 
