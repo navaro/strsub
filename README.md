@@ -1,4 +1,5 @@
 # strsub
+
 This is a string substitution library written in C.
 
 Substrings between open and closing delimiter tokens are replaced with a new string, for example:
@@ -50,12 +51,11 @@ This should give the following output:
 
 > **Note**: In this example we also use the second handler (%%) to replace date, this is only for example purposes:
 
-## The output for the examples above:
-### Example 1:
+#### ``` ### EXAMPLE 1 ### ```
 
 In this example, we are parsing a string from a source to a destination by replacing text from the configuration file. The replacement is the "value" of the "key-value" pair in a configuration text file. We also have a specific handler to replace [date] with the current date and time. In this examples [date] and %date% is the same.
 
-### Example 2:
+#### ``` ### EXAMPLE 2 ### ```
 
 In this example, we use the output from the previous example and additionally substitute the text between the '#' delimiters. Note the subtle difference, we are directly outputting the character corresponding to the ASCII key code to the console using the substitution function. By using this method, we can also execute other commands such as changing the font through delimiter-coded commands.
 
