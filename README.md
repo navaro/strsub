@@ -67,5 +67,5 @@ There is also configurable escape character ("\" for the example):
 ```
 Which should give the following output:
 ```
-    [name] will be replaced by Mark S.
+[name] will be replaced by Mark S.
 ```
