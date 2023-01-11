@@ -43,6 +43,14 @@ Or you can use a specific configuration file using the --config option:
 
 > **Note**: In this example we also use the second handler (%%) to replace date, this is only for example purposes:
 
+There is also an escape character:
+```
+./build/strsub "\[name] will be replaced by [name]."
+### EXAMPLE 1 ###
+
+    [name] will be replaced by Mark S.
+```
+
 ## Example 1:
 
 In this example, we are parsing a string from a source to a destination by replacing text from the configuration file. The replacement is the "value" of the "key-value" pair in a configuration text file. We also have a specific handler to replace [date] with the current date and time. In this examples [date] and %date% is the same.
