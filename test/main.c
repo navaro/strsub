@@ -24,20 +24,20 @@ struct option opt_parm[] = {
 static char *              opt_text = 0;
 static char *              opt_config_file = "default.cfg" ;
 
-static STRSUB_HANDLER_T		_strsub_config ;
-static STRSUB_HANDLER_T		_strsub_date ;
-static STRSUB_HANDLER_T		_strsub_date2 ;
-static STRSUB_HANDLER_T 	_strsub_consolewriter ;
+static STRSUB_HANDLER_T     _strsub_config ;
+static STRSUB_HANDLER_T     _strsub_date ;
+static STRSUB_HANDLER_T     _strsub_date2 ;
+static STRSUB_HANDLER_T     _strsub_consolewriter ;
 #pragma GCC diagnostic ignored  "-Wmissing-braces"
-static STRSUB_INSTANCE_T 	_strsub_consolewriter_inst = {'\\', {"##", 0, 0}, {0}} ;
+static STRSUB_INSTANCE_T    _strsub_consolewriter_inst = {'\\', {"##", 0, 0}, {0}} ;
 
-static int32_t 		strsub_config_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len, uint32_t offset, uintptr_t arg) ;
-static int32_t		strsub_date_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,  uint32_t offset, uintptr_t arg) ;
-static int32_t		strsub_consolewriter_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,  uint32_t offset, uintptr_t arg) ;
+static int32_t      strsub_config_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len, uint32_t offset, uintptr_t arg) ;
+static int32_t      strsub_date_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,  uint32_t offset, uintptr_t arg) ;
+static int32_t      strsub_consolewriter_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,  uint32_t offset, uintptr_t arg) ;
 
 
 
-static int32_t 		consolewriter_cb (const char * str, uint32_t len, uint32_t offset, uintptr_t arg) ;
+static int32_t      consolewriter_cb (const char * str, uint32_t len, uint32_t offset, uintptr_t arg) ;
 
 
 void
@@ -49,7 +49,7 @@ usage(char* comm)
         "  %s <text> [OPTIONS]\n"
         "    <text>               Text to parse.\n"
         "    --help                Shows this message.\n"
-    	"    --config              Configuration file.\n"
+        "    --config              Configuration file.\n"
         ,
         ENGINE_VERSION_STR,
         comm);
@@ -73,7 +73,7 @@ main(int argc, char* argv[])
     while ((c = getopt_long (argc, (char *const *) argv, "-h", opt_parm, &opt_index)) != -1) {
         switch (c) {
         case 1:
-        	opt_text = optarg;
+            opt_text = optarg;
             break;
 
         case 'h':
@@ -122,26 +122,30 @@ main(int argc, char* argv[])
      */
     newwtext = malloc(dstlen) ;
     if (newwtext) {
-    	/*
-    	 * Parse the source string to the destination string replacing all
-    	 * delimited text.
-    	 */
+        /*
+         * Parse the source string to the destination string replacing all
+         * delimited text.
+         */
         strsub_parse_string_to (0, opt_text, len, newwtext, dstlen) ;
         printf ("    %s", newwtext) ;
         printf ("\r\n\r\n") ;
 
     } else {
-    	printf ("out of memory!\r\n")  ;
-    	return 0 ;
+        printf ("out of memory!\r\n")  ;
+        return 0 ;
 
     }
 
     /*
      * Example 2:  Use the output of example 1. This time we simply write
-     *             the string directly to the console. The string is first
-     *             parsed and all ASCII codes delimited with '#' delimiters
-     *             are replaced by the ASCII char before it is written to the
-     *             console with the consolewriter_cb() function.
+     *             the string directly to the console. The string is
+     *             parsed and all ASCII key codes delimited with '#' delimiters
+     *             are printed directly to the console in the callback handler.
+     *             This function can be used to execute other commands also
+     *             like changing the font etc.
+     *
+     *             All other characters are written console in the
+     *             consolewriter_cb() function.
      */
     printf ("### EXAMPLE 2 ###\r\n\r\n    ") ;
     /*
@@ -151,29 +155,36 @@ main(int argc, char* argv[])
      * ASCII character.
      */
     strsub_install_handler (&_strsub_consolewriter_inst, StrsubToken1,
-    			&_strsub_consolewriter, strsub_consolewriter_cb) ;
+                &_strsub_consolewriter, strsub_consolewriter_cb) ;
     /*
      * Parse the string.
      */
-	strsub_parse (&_strsub_consolewriter_inst,
-				consolewriter_cb, newwtext, strlen(newwtext), 0) ;
-	/*
-	 * We dont need to print the result because it is
+    strsub_parse (&_strsub_consolewriter_inst,
+                consolewriter_cb, newwtext, strlen(newwtext), 0) ;
+    /*
+     * We dont need to print the result because it is
      * already done by consolewriter_cb().
-	 */
+     */
 
     printf ("\r\n\r\n") ;
 
 
 
-	free (newwtext) ;
+    free (newwtext) ;
     return 0;
 }
 
 
-
+/**
+ * @brief   lookup a key-value pair in a text file
+ * @note    key need not be zero terminated
+ * @post    returned value must be freed with free()
+ * @param[in] key   key to find in the config file
+ * @param[in] len   length of key
+ * @return          allocated value for the key. NULL if not found
+ */
 static char
-*read_string(char const *desired_name, size_t len) {
+*read_string(char const *key, size_t len) {
     char name[128];
     char val[128];
     char * str = NULL ;
@@ -187,7 +198,7 @@ static char
     while (fscanf(fp, "%127[^=]=%127[^\n]%*c", name, val) == 2) {
         char* pname = &name[0] ;
         while (isspace((int)*pname)) pname++ ;
-        if (0 == strncmp(pname, desired_name, len)) {
+        if (0 == strncmp(pname, key, len)) {
             char* pval = &val[0] ;
             while (isspace((int)*pval)) pval++ ;
             str = strdup(pval);
@@ -206,75 +217,93 @@ static char
     return str;
 }
 
+/**
+ * @brief   strsub callback handler.
+ * @note    will replace text with the value if found as key-value pair in
+ *          the config file.
+ */
 int32_t
 strsub_config_cb(STRSUB_REPLACE_CB cb, const char * str, size_t len,
                     uint32_t offset, uintptr_t arg)
 {
     int32_t res = -1 ;
 
-	char *temp = read_string(str, len);
-	if (temp) {
-		int32_t dstlen = strlen(temp) ;
-		res = cb (temp, dstlen, offset, arg) ;
-		free(temp);
+    char *temp = read_string(str, len);
+    if (temp) {
+        int32_t dstlen = strlen(temp) ;
+        res = cb (temp, dstlen, offset, arg) ;
+        free(temp);
 
-	}
+    }
 
     return res ;
 }
 
+/**
+ * @brief   strsub callback handler.
+ * @note    will replace "date" with the todays date.
+ */
 int32_t
 strsub_date_cb(STRSUB_REPLACE_CB cb, const char * str, size_t len,
                     uint32_t offset, uintptr_t arg)
 {
     int32_t res = -1 ;
 
-	if (strncmp(str, "date", len) == 0) {
+    if (strncmp(str, "date", len) == 0) {
 
-		char tmp[64] ;
-		time_t t = time(NULL);
-		struct tm tm = *localtime(&t);
-		snprintf(tmp, sizeof(tmp), "%d-%02d-%02d %02d:%02d:%02d",
-			  tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
-			  tm.tm_hour, tm.tm_min, tm.tm_sec);
+        char tmp[64] ;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        snprintf(tmp, sizeof(tmp), "%d-%02d-%02d %02d:%02d:%02d",
+              tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+              tm.tm_hour, tm.tm_min, tm.tm_sec);
 
-		res = cb (tmp, strlen(tmp), offset, arg) ;
-	}
+        res = cb (tmp, strlen(tmp), offset, arg) ;
+    }
 
     return res ;
 }
 
+/**
+ * @brief   strsub callback handler.
+ * @note    Print ASSCII for key code. Can be used to execute other commands
+ *          like changing the font etc.
+ */
 int32_t
 strsub_consolewriter_cb (STRSUB_REPLACE_CB cb, const char * str, size_t len,
-		uint32_t offset, uintptr_t arg)
+        uint32_t offset, uintptr_t arg)
 {
-	int32_t res = 0 ;
-	int ch ;
+    int32_t res = 0 ;
+    int ch ;
 
-	if (*str == '#') {
-		/* here "##" also escapes and writes one "#" */
-		return cb(str, 1, offset,  arg) ;
-	}
+    if (*str == '#') {
+        /* special case: here "##" also escapes and writes one "#" */
+        return cb(str, 1, offset,  arg) ;
+    }
 
-	if (sscanf(str, "%u", &ch) == 1) {
+    if (sscanf(str, "%u", &ch) == 1) {
 
-		printf ("%c", (char)ch) ;
+        printf ("%c", (char)ch) ;
 
-	}
+    }
 
-	return res ;
+    return res ;
 }
 
+/**
+ * @brief   Callback handler.
+ * @note    Write all characters to the console.
+ */
 int32_t
 consolewriter_cb (const char * str, uint32_t len,
-									uint32_t offset, uintptr_t arg)
+                                    uint32_t offset, uintptr_t arg)
 {
-	for (int i=0; i<len; i++) {
-		putchar ((int)str[i]) ;
+    for (int i=0; i<len; i++) {
+        putchar ((int)str[i]) ;
 
-	}
+    }
 
-	return len ;
+    return len ;
 }
 
 
