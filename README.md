@@ -1,31 +1,71 @@
 # strsub
+
 This is a string substitution library written in C.
 
-Substrings between an open and a closing delimiter token are replaced with a new string, for example:
+Substrings between open and closing delimiter tokens are replaced with a new string, for example:
 ```
-The name of the module is [name].
-```
-
-In this case "[" and "]" is the opening and the closing delimiter tokens. An installed handler can replace [name] with a replacement string. One or more handlers can be installed for a pair of delimiter tokens.
-
-# Example
-
-To run the example open a codespace and compile the project. There is a Makefile so simply type ``` make ``` when the codespace is started.
-
-Run an example using by trying something like this:
-strsub  "[name] was in [location] on #219# [date] #219#"
-
-
-```
-./build/strsub "[name] was in [location] on [date] #254# #12##12##12##15#"
-Mark S was in Amsterdam on 2023-01-11 11:15:37 #254# #12##12##12##15#
-Mark S was in Amsterdam on 2023-01-11 11:15:37 � 
-
-
-
-48 characters written
+[name] was in [location].
 ```
 
-strsub  "[name] was in [location] on #219# [date] #219#" --config=./test/test.cfg
+In this case "[" and "]" is the opening and the closing delimiter tokens. One or more handlers can be installed to do the text replacement. If the parser finds the delimiter tokens, the handlers are called to provide the replacement for the text, "name" and "location" in the string shown above. The final output string could appear as follows:
 
-## Example 1
+```
+Helly R. was in Dover.
+```
+
+If no handler can replace the text, the string is left unchanged.
+
+# Example 1
+
+In this example, we are parsing a string from a source to a destination by replacing text from a config file. The replacement is the "value" of the "key-value" pair in a config file. The example installs a handler using a key-value lookup from a config file to replace the text.
+
+The examples compile and runs perfectly in a codespace. There is a Makefile so simply type ``` make ``` in the terminal when the codespace is started. Run an example by trying the following in the terminal:
+
+```
+./build/strsub  "[name] was in [location]."
+```
+
+It should give the following output: 
+
+```
+Mark S. was in Amsterdam.
+```
+
+If no config file is specified "default.cfg" is used, expected in the current directory. Or you can use a specific configuration file using the --config option:
+
+```
+./build/strsub  "[name] was in [location]." --config=./test/test.cfg
+```
+
+This should give the following output:
+
+```
+Helly R. was in Dover.
+```
+
+
+# Example 2
+
+In this example, we substitute the text between the '#' delimiters. We are directly outputting each character in the string, and replace the delimited ASCII key code with the character, before writing it to the console. By using this method, we can also execute other commands such as changing the font through delimiter-coded commands.
+
+```
+./build/strsub  "[name] was in [location] on #219# [date] #219#"
+```
+
+This should output:
+
+```
+ Helly R. was in Dover on � 2023-01-11 11:59:38 �	
+```
+
+
+# Escape Characters
+
+There is also configurable escape character ("\" for the example):
+```
+./build/strsub "\[name] will be replaced by [name]."
+```
+Which should give the following output:
+```
+[name] will be replaced by Mark S.
+```
