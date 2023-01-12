@@ -110,8 +110,10 @@ main(int argc, char* argv[])
     strsub_install_handler (0, StrsubToken1, &_strsub_date, strsub_date_cb) ;
     strsub_install_handler (0, StrsubToken2, &_strsub_date2, strsub_date_cb) ;
 
+    /*
+     * Example 1
+     */
 
-    printf ("### EXAMPLE 1 ###\r\n\r\n") ;
     /*
      * Determine the length of the source and destination strings.
      */
@@ -127,8 +129,10 @@ main(int argc, char* argv[])
     	 * delimited text.
     	 */
         strsub_parse_string_to (0, opt_text, len, newwtext, dstlen) ;
-        printf ("    %s", newwtext) ;
-        printf ("\r\n\r\n") ;
+
+        /*
+         * First process example 2 before we print the result.
+         */
 
     } else {
     	printf ("out of memory!\r\n")  ;
@@ -143,7 +147,7 @@ main(int argc, char* argv[])
      *             are replaced by the ASCII char before it is written to the
      *             console with the consolewriter_cb() function.
      */
-    printf ("### EXAMPLE 2 ###\r\n\r\n    ") ;
+
     /*
      * Install a handler for the new instance of strsub to
      * _strsub_consolewriter_inst. This handler writes  the string to the
@@ -153,7 +157,7 @@ main(int argc, char* argv[])
     strsub_install_handler (&_strsub_consolewriter_inst, StrsubToken1,
     			&_strsub_consolewriter, strsub_consolewriter_cb) ;
     /*
-     * Parse the string.
+     * Parse the string using the new instance of strsub.
      */
 	strsub_parse (&_strsub_consolewriter_inst,
 				consolewriter_cb, newwtext, strlen(newwtext), 0) ;
@@ -162,7 +166,7 @@ main(int argc, char* argv[])
      * already done by consolewriter_cb().
 	 */
 
-    printf ("\r\n\r\n") ;
+    printf ("\r\n") ;
 
 
 
