@@ -17,9 +17,9 @@ If no handler can replace the text, the string is left unchanged.
 
 # Example 1
 
-In this example, we are parsing a string from a source to a destination by replacing text from a config file. The replacement is the "value" of the "key-value" pair in a config file. The example installs a handler using a key-value lookup from a config file to replace the text.
+In this example, we are parsing a string from a source to a destination by replacing text from a config file. The replacement is the "value" of the "key-value" pair in a config file. The example installs a handler using a key-value lookup from the config file to replace the text.
 
-The examples compile and runs perfectly in a codespace. There is a Makefile so simply type ``` make ``` in the terminal when the codespace is started. Run an example by trying the following in the terminal:
+The example compile and runs perfectly in a codespace. There is a Makefile so simply type ``` make ``` in the terminal when the codespace is started. Run an example by trying the following in the terminal:
 
 ```
 ./build/strsub  "[name] was in [location]."
