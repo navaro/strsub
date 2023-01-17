@@ -174,6 +174,13 @@ main(int argc, char* argv[])
 
 
 
+    strsub_uninstall_handler (0, StrsubToken2, &_strsub_date2) ;
+    strsub_uninstall_handler (0, StrsubToken1, &_strsub_config) ;
+    strsub_uninstall_handler (0, StrsubToken1, &_strsub_date) ;
+    strsub_uninstall_handler (&_strsub_consolewriter_inst, StrsubToken1,
+                &_strsub_consolewriter) ;
+
+
     free (newwtext) ;
     return 0;
 }
