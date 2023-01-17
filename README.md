@@ -2,18 +2,18 @@
 
 This is a string substitution library written in C.
 
-Substrings between open and closing delimiter tokens are replaced with a new string, for example:
+Substrings between open and closing delimiter tokens are replaced with new strings, for example:
 ```
 [name] was in [location].
 ```
 
-In this case "[" and "]" is the opening and the closing delimiter tokens. One or more handlers can be installed to do the text replacement. If the parser finds the delimiter tokens, the handlers are called to provide the replacement for the text, "name" and "location" in the string shown above. The final output string could appear as follows:
+In this case "[" and "]" is the opening and the closing delimiter tokens. One or more handlers can be installed to do string replacement. If the parser finds the delimiter tokens, the handlers are called to provide the replacement for the strings, "name" and "location" in the example shown above. The final output string could appear as follows:
 
 ```
 Helly R. was in Dover.
 ```
 
-If no handler can replace the text, the string is left unchanged.
+If no handler can replace the string, it is left unchanged.
 
 # Example 1
 
